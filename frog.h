@@ -3,7 +3,7 @@
 #include "constants.h"
 #include <cstdlib>
 
-struct Bird {
+struct Frog {
     float x  = 180.0f;
     float y  = WIN_H / 2.0f;
     float vy = 0.0f;
@@ -27,12 +27,8 @@ struct Bird {
 				if(vy > 0.1f || vy < -0.1f) y += vy;
     }
 
-    //  Conditions:
-    //    bottom edge: y - BIRD_R   (dies when this is < GROUND_H)
-    //    top edge:    y + BIRD_R   (dies when this is > WIN_H)
-    //
-    bool dead() const {
-        if(y - BIRD_R < GROUND_H || y + BIRD_R > WIN_H )return true;
+    //Make Death Conditions
+		bool dead() const {
 				return false;
     }
 private:
@@ -53,11 +49,6 @@ private:
         }
     }
 
-    void randomizeColors() {
-        float hue = (float)(rand() % 360);
-        hsvToRgb(hue, 0.80f, 1.00f, bodyR, bodyG, bodyB);
-        hsvToRgb(hue, 1.00f, 0.70f, wingR, wingG, wingB);
-    }
 };
 
-void drawBird(const Bird& bird);
+void drawFrog(const Frog& frog);
