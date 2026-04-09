@@ -15,7 +15,7 @@
 
 enum State { MENU, PLAYING, DEAD };
 
-// ─── Game state ───────────────────────────────────────────────────────────────
+// ─── Game state ──────────────────────────────────────────────────────────────
 
 static State             gState = MENU;
 static Frog              gFrog;
@@ -121,9 +121,9 @@ static void update() {
         std::remove_if(gPipes.begin(), gPipes.end(),
                        [](const Pipe& p){ return p.offScreen(); }),
         gPipes.end());
-}
-*/
 
+*/
+}
 //above comment is for refernence when we make log and car obstacles.
 // ─── GLUT callbacks ───────────────────────────────────────────────────────────
 
@@ -198,7 +198,6 @@ int main(int argc, char** argv) {
     glutDisplayFunc(display);
     glutKeyboardFunc(keyDown);
 		glutSpecialFunc(specialKeyDown);
-    glutMouseFunc(mouseClick);
     glutTimerFunc(16, timerCB, 0);
 
     glutMainLoop();

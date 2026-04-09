@@ -8,13 +8,13 @@ constexpr int   PIPE_INTERVAL =  95;   // frames between pipe spawns
 constexpr float BIRD_R        =  14.0f;
 constexpr float PIPE_W        =  60.0f; //unnecessary
 
-constexpr float FROG_SLOW_SPEED    =  -0.4f; //TODO
+constexpr float FROG_SLOW_SPEED    =  -0.5f; //this needs to be a factor of the pixel width
 
 // Upward velocity applied when the player flaps.
 // Must be POSITIVE (e.g. try values between 6.0 and 12.0).
-constexpr float HOP_VEL   =  7.0f; //TODO
+constexpr float HOP_VEL   =  4.0f; //TODO
 
 // How many pixels the pipes move left each frame.
 // Try values between 2.0 and 5.0.
-constexpr float PIPE_SPEED =  4.0f;   // remove this
+constexpr float PIPE_SPEED =  4.0f;   // change this to log and car speed
 
