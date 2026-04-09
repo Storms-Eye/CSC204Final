@@ -20,36 +20,19 @@ enum State { MENU, PLAYING, DEAD };
 static State             gState = MENU;
 static Frog              gFrog;
 static std::vector<Obstacles> gObstacles;
-static int               gScore = 0;
-static int               gBest  = 0; //change this to # of lives
+static int               gScore = 0;// unecessary
+static int               gBest  = 0;// unecessary 
 static int               gFrame = 0;
-
+static int							 gLives = 3;
 // ─── Scene drawing ────────────────────────────────────────────────────────────
 
 static void drawBackground() {
-    // Sky gradient (top → bottom)
-    glBegin(GL_QUADS);
-      glColor3f(0.27f, 0.60f, 0.95f);
-      glVertex2f(0,     WIN_H);
-      glVertex2f(WIN_W, WIN_H);
-      glColor3f(0.55f, 0.80f, 1.00f);
-      glVertex2f(WIN_W, GROUND_H);
-      glVertex2f(0,     GROUND_H);
-    glEnd();
-
-    // Ground dirt
-    glColor3f(0.55f, 0.37f, 0.12f);
-    quad(0, 0, WIN_W, GROUND_H);
-
-    // Grass strip
-    glColor3f(0.30f, 0.72f, 0.20f);
-    quad(0, GROUND_H - 8, WIN_W, 14);
+// Brady's background goes here
 }
 
 static void drawHUD() {
-    glColor3f(1.0f, 1.0f, 1.0f);
-    text18(14, WIN_H - 26, "Score: " + std::to_string(gScore));
-    text18(14, WIN_H - 50, "Best:  " + std::to_string(gBest));
+    glColor3f(1.0f, 1.0f, 1.0f); 
+    text18(14, WIN_H - 26, "Lives: " + std::to_string(gScore/*change this*/));
 }
 
 static void drawOverlay(const char* title, const char* sub) {
@@ -69,33 +52,51 @@ static void drawOverlay(const char* title, const char* sub) {
 
     if (gState == DEAD) {
         text18(WIN_W / 2.0f - 80.0f, WIN_H / 2.0f - 44.0f,
-               "Score: " + std::to_string(gScore) +
-               "   Best: " + std::to_string(gBest));
+               "Game Over");
     }
 }
 
 // ─── Logic ────────────────────────────────────────────────────────────────────
 
 static void resetGame() {
-    gBird.reset();
-    gPipes.clear();
+    gFrog.reset();
+    gObstacles.reset(); //remake this function
     gScore = 0;
     gFrame = 0;
+		gLives = 3; //this variable needs to be initialized
     gState = PLAYING;
+}
+static void reviveFrog()
+{
+	gFrog.reset();
+	gLives--;
 }
 
 static void update() {
     if (gState != PLAYING) return;
 
-    gBird.update();
+    gFrog.update();
 
-    if (gBird.dead()) {
-        if (gScore > gBest) gBest = gScore;
-        gState = DEAD;
-        return;
+    if (gFrog.dead()) {
+        if(gLives > 0) 
+				{
+					reviveFrog();
+				}
+				else
+				{
+					gState = DEAD;
+        	return;
+				}
     }
+		/*if (gFrog.hasWon()) 
+		{
+			
+		}*/
 
-    // Spawn pipes
+//this code is for a win check
+
+
+    /*// Spawn pipes
     ++gFrame;
     if (gFrame % PIPE_INTERVAL == 1)
         gPipes.emplace_back((float)WIN_W + 10.0f);
@@ -121,19 +122,21 @@ static void update() {
                        [](const Pipe& p){ return p.offScreen(); }),
         gPipes.end());
 }
+*/
 
+//above comment is for refernence when we make log and car obstacles.
 // ─── GLUT callbacks ───────────────────────────────────────────────────────────
 
 static void display() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     drawBackground();
-    drawPipes(gPipes);
-    drawBird(gBird);
+    drawObstacles(gObstacles);
+    drawFrog(gFrog);
     drawHUD();
 
     if (gState == MENU)
-        drawOverlay("FLAPPY BIRD", "SPACE or click to start");
+        drawOverlay("Frogger", "SPACE or click to start");
     else if (gState == DEAD)
         drawOverlay("GAME OVER", "Press R to restart");
 
@@ -147,10 +150,9 @@ static void timerCB(int) {
 }
 
 static void keyDown(unsigned char k, int, int) {
-    switch (k) {
+    switch (k) { 
         case ' ':
             if (gState == MENU) resetGame();
-            else if (gState == PLAYING) gBird.flap();
             break;
         case 'r': case 'R':
             if (gState == DEAD) resetGame();
@@ -159,13 +161,23 @@ static void keyDown(unsigned char k, int, int) {
             exit(0);
     }
 }
-
-static void mouseClick(int btn, int st, int, int) {
-    if (btn == GLUT_LEFT_BUTTON && st == GLUT_DOWN) {
-        if (gState == MENU)         resetGame();
-        else if (gState == PLAYING) gBird.flap();
-    }
+static void specialKeyDown(int k, int, int) {
+    switch (k) { 
+				case GLUT_KEY_UP:
+						if (gState == PLAYING) gFrog.hopPosY();
+						break;
+				case GLUT_KEY_DOWN:
+						if (gState == PLAYING) gFrog.hopNegY();
+						break;
+				case GLUT_KEY_RIGHT:
+						if (gState == PLAYING) gFrog.hopPosX();
+						break;
+				case GLUT_KEY_LEFT:
+						if (gState == PLAYING) gFrog.hopNegX();
+						break;
+		}
 }
+
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
@@ -175,7 +187,7 @@ int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowSize(WIN_W, WIN_H);
-    glutCreateWindow("Flappy Bird");
+    glutCreateWindow("Frogger");
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -185,6 +197,7 @@ int main(int argc, char** argv) {
 
     glutDisplayFunc(display);
     glutKeyboardFunc(keyDown);
+		glutSpecialFunc(specialKeyDown);
     glutMouseFunc(mouseClick);
     glutTimerFunc(16, timerCB, 0);
 

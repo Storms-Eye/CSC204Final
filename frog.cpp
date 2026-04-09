@@ -8,7 +8,7 @@ void drawFrog(const Frog& frog) {
     glPushMatrix();
     glTranslatef(cx, cy, 0.0f);
 
-    // Body
+    // Body, Alan's frog texturing
     //glColor3f(bird.bodyR, bird.bodyG, bird.bodyB); translate into frogger image
     //circle(0, 0, r);
 
