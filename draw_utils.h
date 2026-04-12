@@ -20,6 +20,20 @@ inline void quad(float x, float y, float w, float h)
     glEnd();
 }
 
+inline void texturedQuad(float x, float y, float w, float h)
+{
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0f, 1.0f); 
+    glVertex2f(x, y);
+    glTexCoord2f(1.0f, 1.0f); 
+    glVertex2f(x + w, y);
+    glTexCoord2f(1.0f, 0.0f); 
+    glVertex2f(x + w, y + h);
+    glTexCoord2f(0.0f, 0.0f); 
+    glVertex2f(x, y + h);
+    glEnd();
+}
+
 inline void circle(float cx, float cy, float r, int segs = 24)
 {
     glBegin(GL_POLYGON);

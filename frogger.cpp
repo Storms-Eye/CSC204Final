@@ -1,7 +1,7 @@
 #include "draw_utils.h"
+#include "frog-texture.h"
 #include "frog.h"
 #include "obstacle.h"
-
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
@@ -195,6 +195,23 @@ static void specialKeyDown(int k, int, int)
     }
 }
 
+GLuint frogTextureID;
+void initTextures()
+{
+    glGenTextures(1, &frogTextureID);
+    glBindTexture(GL_TEXTURE_2D, frogTextureID);
+
+    // Crisp pixel borders instead of blurring.
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    GLenum format = (gimp_image.bytes_per_pixel == 4) ? GL_RGBA : GL_RGB;
+
+    glTexImage2D(GL_TEXTURE_2D, 0, format, gimp_image.width, gimp_image.height, 0, format, GL_UNSIGNED_BYTE, gimp_image.pixel_data);
+}
+
 int main(int argc, char **argv)
 {
     srand((unsigned)time(nullptr));
@@ -203,6 +220,8 @@ int main(int argc, char **argv)
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowSize(WIN_W, WIN_H);
     glutCreateWindow("Frogger");
+
+    initTextures();
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();

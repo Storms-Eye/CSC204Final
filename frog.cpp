@@ -1,5 +1,8 @@
 #include "frog.h"
 #include "draw_utils.h"
+#include "frog-texture.h"
+
+extern GLuint frogTextureID;
 
 void Frog::draw()
 {
@@ -9,9 +12,10 @@ void Frog::draw()
     glPushMatrix();
     glTranslatef(cx, cy, 0.0f);
     glColor3f(1.0f, 1.0f, 1.0f);
-    // Might change image dimensions later.
-    quad(-12.5f, -12.5f, 25.0f, 25.0f);
-
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, frogTextureID); // Assuming this is accessible
+    texturedQuad(0.0f, 0.0f, FROG_SIZE, FROG_SIZE);
+    glDisable(GL_TEXTURE_2D);
     glPopMatrix();
 }
 
@@ -29,7 +33,7 @@ void Frog::hopPosX()
 
 void Frog::hopNegX()
 {
-    if ((x - FROG_SIZE) > 0)
+    if ((x - FROG_SIZE) >= 0)
     {
         x -= FROG_SIZE;
     }
@@ -45,7 +49,7 @@ void Frog::hopPosY()
 
 void Frog::hopNegY()
 {
-    if ((y - FROG_SIZE) > 0)
+    if ((y - FROG_SIZE) >= 0)
     {
         y -= FROG_SIZE;
     }

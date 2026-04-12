@@ -5,13 +5,14 @@
 
 class Obstacle
 {
+private:
     float x;
     float gapCY; // Y-coordinate of the centre of the gap
     bool scored = false;
 
+public:
     explicit Obstacle(float startX);
-    void update() { x -= PIPE_SPEED; }
-
+    void update() {}
     bool hits(float bx, float by) const;
 };
 
