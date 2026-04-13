@@ -1,6 +1,5 @@
 #include "tree.h"
 #include "draw_utils.h"
-#include "tree-texture.h"
 
 extern GLuint treeID;
 
