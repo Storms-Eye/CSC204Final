@@ -34,7 +34,7 @@ static void drawBackground()
 static void drawHUD()
 {
     glColor3f(1.0f, 1.0f, 1.0f);
-    text18(14, WIN_H - 26, "Lives: " + std::to_string(gScore /*change this*/));
+    text18(14, WIN_H - 26, "Lives: " + std::to_string(gLives));
 }
 
 static void drawOverlay(const char *title, const char *sub)

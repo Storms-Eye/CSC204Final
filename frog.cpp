@@ -57,8 +57,8 @@ void Frog::hopNegY()
 
 void Frog::reset()
 {
-    x = WIN_W / 2.0f;
-    y = WIN_H / 2.0f;
+    x = WIN_W / 2.0f - FROG_SIZE; // 
+    y = 0; //bottom of the window
 }
 
 // TODO: add the conditions for death from obstacle.

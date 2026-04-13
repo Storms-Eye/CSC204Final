@@ -16,4 +16,17 @@ set(SRCS
 # Create the executable target
 add_executable(frogger ${SRCS})
 
-target_link_libraries(frogger PRIVATE OpenGL::GL OpenGL::GLU GLUT::GLUT)
+if(APPLE)
+    target_link_libraries(frogger PRIVATE
+        OpenGL::GL
+        GLUT::GLUT
+        "-framework OpenGL"
+        "-framework GLUT"
+    )
+else()
+    target_link_libraries(frogger PRIVATE
+        OpenGL::GL
+        OpenGL::GLU
+        GLUT::GLUT
+    )
+endif()
