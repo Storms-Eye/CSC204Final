@@ -76,7 +76,6 @@ static void update()
     {
         if (frog.getLives() > 0)
         {
-            frog.reset();
             frog.revive();
         }
         else

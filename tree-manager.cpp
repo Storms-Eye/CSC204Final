@@ -14,8 +14,21 @@ void TreeManager::draw()
         glColor3f(1.0f, 1.0f, 1.0f);
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, treeTextureID); // Assuming this is accessible
-        texturedQuad(0.0f, 0.0f, FROG_SIZE, FROG_SIZE);
+        texturedQuad(0.0f, 0.0f, tree.width, tree.height);
         glDisable(GL_TEXTURE_2D);
         glPopMatrix();
+    }
+}
+
+void TreeManager::addTree(float x, float y)
+{
+    trees.push_back({x, y, TREE_SIZE, TREE_SIZE, 0});
+}
+
+void TreeManager::update()
+{
+    for (auto &tree : trees)
+    {
+        // TODO: Add or subtract dx based on the time passed.
     }
 }

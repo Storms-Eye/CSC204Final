@@ -14,7 +14,7 @@ void CarManager::draw()
         glColor3f(1.0f, 1.0f, 1.0f);
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, carTextureID);
-        texturedQuad(0.0f, 0.0f, CAR_SIZE, CAR_SIZE);
+        texturedQuad(0.0f, 0.0f, car.width, car.height);
         glDisable(GL_TEXTURE_2D);
         glPopMatrix();
     }
@@ -22,7 +22,7 @@ void CarManager::draw()
 
 void CarManager::addCar(float x, float y)
 {
-    cars.push_back({x, y, LOG_SIZE_W, LOG_SIZE_H, LOG_SPEED, 0.0f});
+    cars.push_back({x, y, CAR_SIZE, CAR_SIZE, CAR_SPEED});
 }
 
 void CarManager::update()

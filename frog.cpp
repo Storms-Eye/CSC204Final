@@ -28,6 +28,8 @@ void Frog::draw()
 
 void Frog::revive()
 {
+    x = WIN_W / 2.0f - FROG_SIZE / 2.0f;
+	y = 0.0f;
     lives--;
 }
 
@@ -35,6 +37,7 @@ void Frog::reset()
 {
 	x = WIN_W / 2.0f - FROG_SIZE / 2.0f;
 	y = 0.0f;
+    lives = 3;
 }
 
 // TODO: add the conditions for death from obstacle.

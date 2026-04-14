@@ -5,8 +5,7 @@ struct Obstacle
 {
     float x;
     float y;
-    float w;
-    float h;
-    float dx; // Distance per second.
-    float dy;
+    float width;
+    float height;
+    float speed; // Horizontal speed. 
 };
