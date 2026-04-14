@@ -1,12 +1,13 @@
 #include "../include/frog.h"
 #include "../include/draw_utils.h"
 #include "../textures/frog.h"
-
+#include <array>
 extern GLuint frogTextureID;
 
 Frog::Frog()
 {
-    lives = 3;
+  lives = 3;
+	array<bool> winPlatforms = {false, false, false, false, false};
 }
 
 void Frog::draw()
@@ -26,11 +27,17 @@ void Frog::draw()
     glPopMatrix();
 }
 
-void Frog::revive()
+int Frog::hasWon()
 {
-    x = WIN_W / 2.0f - FROG_SIZE / 2.0f;
+	//redo this
+}
+
+
+void Frog::revive(bool hasWon)
+{
+  x = WIN_W / 2.0f - FROG_SIZE / 2.0f;
 	y = 0.0f;
-    lives--;
+  if(!hasWon) lives--;
 }
 
 void Frog::reset()

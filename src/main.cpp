@@ -28,7 +28,7 @@ enum State
 
 // Game state
 static State gState = MENU;
-static int gFrame = 0;
+int gFrame = 0;
 
 static LogManager logs;
 static CarManager cars;
@@ -71,12 +71,15 @@ static void update()
 {
     if (gState != PLAYING)
         return;
-
+		if(frog.hasWon())
+		{
+			frog.revive(true);
+		}
     if (frog.dead())
     {
         if (frog.getLives() > 0)
         {
-            frog.revive();
+            frog.revive(false);
         }
         else
         {
