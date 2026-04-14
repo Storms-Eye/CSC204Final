@@ -6,7 +6,7 @@
 
 
 #include "frog.h"
-#include "tree.cpp"
+#include "tree.h"
 
 #include <algorithm>
 #include <cstdlib>
