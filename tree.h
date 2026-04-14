@@ -1,5 +1,5 @@
 /*  GIMP header image file format (RGB): /home/student/Desktop/tree.h  */
-
+#pragma once
 static unsigned int tree_width = 16;
 static unsigned int tree_height = 16;
 
