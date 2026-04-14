@@ -3,15 +3,24 @@
 #include "draw_utils.h"
 #include <cstdlib>
 
-struct Frog
+class Frog
 {
+private:
     float x = WIN_W / 2.0f - FROG_SIZE / 2.0f;
     float y = 0.0f;
-    void reset();
+    int lives;
+
+public:
+    Frog();
+
     bool dead();
     void draw();
     void update();
+    void revive();
+    void reset();
 
+    int getLives();
+    
     void hopNegX();
     void hopNegY();
     void hopPosX();

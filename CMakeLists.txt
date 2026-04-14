@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(FroggerProject)
+project(CSC204Final)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -8,8 +8,11 @@ find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 
 set(SRCS 
-    frogger.cpp 
-    frog.cpp 
+    main.cpp 
+    frog.cpp
+    car-manager.cpp
+    log-manager.cpp
+    tree-manager.cpp
 )
 
 # Create the executable target

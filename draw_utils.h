@@ -104,7 +104,9 @@ constexpr int WIN_W = 720;
 constexpr int WIN_H = 720;
 constexpr int OBSTACLE_INTERVAL = 500; // distance between obstacles.
 constexpr float FROG_SIZE = 80.0f;
-constexpr float LOG_SIZE = 80.0f;
+constexpr float CAR_SIZE = 80.0f;
+constexpr float LOG_SIZE_W = 160.0f;
+constexpr float LOG_SIZE_H = 80.0f;
 
 constexpr float CAR_SPEED = 4.0f; 
 constexpr float LOG_SPEED = 3.0f; 

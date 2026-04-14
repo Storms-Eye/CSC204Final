@@ -4,10 +4,13 @@
 #include "obstacle.h"
 #include <vector>
 
-class LogManager
+class CarManager
 {
 private:
-    std::vector<Obstacle> obstacles;
+    std::vector<Obstacle> cars;
 public:
     void draw();
+    void update();
+    
+    void addCar(float x, float y);
 };

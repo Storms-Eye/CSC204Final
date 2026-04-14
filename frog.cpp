@@ -4,6 +4,11 @@
 
 extern GLuint frogTextureID;
 
+Frog::Frog()
+{
+    lives = 3;
+}
+
 void Frog::draw()
 {
     float cx = x;
@@ -21,6 +26,27 @@ void Frog::draw()
     glPopMatrix();
 }
 
+void Frog::revive()
+{
+    lives--;
+}
+
+void Frog::reset()
+{
+	x = WIN_W / 2.0f - FROG_SIZE / 2.0f;
+	y = 0.0f;
+}
+
+// TODO: add the conditions for death from obstacle.
+bool Frog::dead()
+{
+    return false;
+}
+
+int Frog::getLives()
+{
+    return lives;
+}
 
 void Frog::hopPosX()
 {
@@ -52,15 +78,4 @@ void Frog::hopNegY()
     {
         y -= FROG_SIZE;
     }
-}
-
-void Frog::reset()
-{
-	x = WIN_W / 2.0f - FROG_SIZE / 2.0f;
-	y = 0.0f;
-}
-// TODO: add the conditions for death from obstacle.
-bool Frog::dead()
-{
-    return false;
 }

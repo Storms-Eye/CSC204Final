@@ -7,9 +7,10 @@
 #include "textures/tree.h"
 
 #include "background.h"
+#include "car-manager.h"
 #include "frog.h"
-#include "log.h"
-#include "tree.h"
+#include "log-manager.h"
+#include "tree-manager.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -27,32 +28,15 @@ enum State
 
 // Game state
 static State gState = MENU;
-
-static std::vector<int> gTreexs = {0, static_cast<int>(FROG_SIZE), static_cast<int>(FROG_SIZE * 2), static_cast<int>(FROG_SIZE * 3), static_cast<int>(FROG_SIZE * 4), static_cast<int>(FROG_SIZE * 5), static_cast<int>(FROG_SIZE * 6), static_cast<int>(FROG_SIZE * 7)};
-static std::vector<int> gTreeys = {0, 0, 0, 0, 0, 0, 0, 0};
-static std::vector<int> gCarxs;
-static std::vector<int> gCarys;
 static int gFrame = 0;
-static int gLives = 3;
 
 static LogManager logs;
 static Frog frog;
 
-static void drawObstacles(std::vector<int> obxs, std::vector<int> obys, auto drawFunc)
-{
-    for (int i = 0; i < obxs.size(); i++)
-    {
-        for (int j = 0; j < obys.size(); j++)
-        {
-            drawFunc(i, j);
-        }
-    }
-}
-
 static void drawHUD()
 {
     glColor3f(1.0f, 1.0f, 1.0f);
-    text18(14, WIN_H - 26, "Lives: " + std::to_string(gLives));
+    text18(14, WIN_H - 26, "Lives: " + std::to_string(frog.getLives()));
 }
 
 static void drawOverlay(const char *title, const char *sub)
@@ -76,18 +60,11 @@ static void drawOverlay(const char *title, const char *sub)
     }
 }
 
-// Logic
 static void resetGame()
 {
     frog.reset();
     gFrame = 0;
-    gLives = 3; // this variable needs to be initialized
     gState = PLAYING;
-}
-static void reviveFrog()
-{
-    frog.reset();
-    gLives--;
 }
 
 static void update()
@@ -97,9 +74,10 @@ static void update()
 
     if (frog.dead())
     {
-        if (gLives > 0)
+        if (frog.getLives() > 0)
         {
-            reviveFrog();
+            frog.reset();
+            frog.revive();
         }
         else
         {
@@ -107,6 +85,9 @@ static void update()
             return;
         }
     }
+
+    logs.update();
+
     /*if (frog.hasWon())
     {
 
@@ -218,36 +199,49 @@ GLuint carTextureID;
 
 void initTextures()
 {
-    // Crisp pixel borders instead of blurring.
+    GLenum frogFormat = (frog_texture.bytes_per_pixel == 4) ? GL_RGBA : GL_RGB;
+    glGenTextures(1, &frogTextureID);
+    glBindTexture(GL_TEXTURE_2D, frogTextureID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    GLenum frogFormat = (frog_texture.bytes_per_pixel == 4) ? GL_RGBA : GL_RGB;
-    glGenTextures(1, &frogTextureID);
-    glBindTexture(GL_TEXTURE_2D, frogTextureID);
     glTexImage2D(GL_TEXTURE_2D, 0, frogFormat, frog_texture.width, frog_texture.height, 0, frogFormat, GL_UNSIGNED_BYTE, frog_texture.pixel_data);
 
     GLenum backgroundFormat = (background_texture.bytes_per_pixel == 4) ? GL_RGBA : GL_RGB;
     glGenTextures(1, &backgroundTextureID);
     glBindTexture(GL_TEXTURE_2D, backgroundTextureID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage2D(GL_TEXTURE_2D, 0, backgroundFormat, background_texture.width, background_texture.height, 0, backgroundFormat, GL_UNSIGNED_BYTE, background_texture.pixel_data);
 
     GLenum treeFormat = (tree_texture.bytes_per_pixel == 4) ? GL_RGBA : GL_RGB;
     glGenTextures(1, &treeTextureID);
     glBindTexture(GL_TEXTURE_2D, treeTextureID);
-    glBindTexture(GL_TEXTURE_2D, treeTextureID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage2D(GL_TEXTURE_2D, 0, treeFormat, tree_texture.width, tree_texture.height, 0, treeFormat, GL_UNSIGNED_BYTE, tree_texture.pixel_data);
 
     GLenum logFormat = (log_texture.bytes_per_pixel == 4) ? GL_RGBA : GL_RGB;
     glGenTextures(1, &logTextureID);
     glBindTexture(GL_TEXTURE_2D, logTextureID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage2D(GL_TEXTURE_2D, 0, logFormat, log_texture.width, log_texture.height, 0, logFormat, GL_UNSIGNED_BYTE, log_texture.pixel_data);
 
     GLenum carFormat = (car_texture.bytes_per_pixel == 4) ? GL_RGBA : GL_RGB;
     glGenTextures(1, &carTextureID);
     glBindTexture(GL_TEXTURE_2D, carTextureID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexImage2D(GL_TEXTURE_2D, 0, carFormat, car_texture.width, car_texture.height, 0, carFormat, GL_UNSIGNED_BYTE, car_texture.pixel_data);
 }
 
