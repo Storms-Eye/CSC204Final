@@ -1,11 +1,14 @@
 #include "draw_utils.h"
-#include "textures/frog.h"
+
 #include "textures/background.h"
-#include "textures/tree.h"
+#include "textures/car.h"
+#include "textures/frog.h"
 #include "textures/log.h"
+#include "textures/tree.h"
 
-
+#include "background.h"
 #include "frog.h"
+#include "log.h"
 #include "tree.h"
 
 #include <algorithm>
@@ -24,41 +27,28 @@ enum State
 
 // Game state
 static State gState = MENU;
-static Frog gFrog;
-static std::vector<int> gTreexs = {0,static_cast<int>(FROG_SIZE),static_cast<int>(FROG_SIZE*2),static_cast<int>(FROG_SIZE*3),static_cast<int>(FROG_SIZE*4),static_cast<int>(FROG_SIZE*5),static_cast<int>(FROG_SIZE*6),static_cast<int>(FROG_SIZE*7)};
-static std::vector<int> gTreeys = {0,0,0,0,0,0,0,0};
-static std::vector<int> gLogxs;
-static std::vector<int> gLogys;
+
+static std::vector<int> gTreexs = {0, static_cast<int>(FROG_SIZE), static_cast<int>(FROG_SIZE * 2), static_cast<int>(FROG_SIZE * 3), static_cast<int>(FROG_SIZE * 4), static_cast<int>(FROG_SIZE * 5), static_cast<int>(FROG_SIZE * 6), static_cast<int>(FROG_SIZE * 7)};
+static std::vector<int> gTreeys = {0, 0, 0, 0, 0, 0, 0, 0};
 static std::vector<int> gCarxs;
 static std::vector<int> gCarys;
 static int gFrame = 0;
 static int gLives = 3;
 
-// Scene drawing
-GLuint backgroundID;
-static void drawBackground()
-{
-   glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, backgroundID);
-    glColor3f(1.0f, 1.0f, 1.0f); // no tint
-    glBegin(GL_QUADS);
-    glTexCoord2f(0, 1); glVertex2f(0, 0);
-		glTexCoord2f(1, 1); glVertex2f(WIN_W, 0);
-		glTexCoord2f(1, 0); glVertex2f(WIN_W, WIN_H);
-		glTexCoord2f(0, 0); glVertex2f(0, WIN_H);
-		glEnd();
-    glDisable(GL_TEXTURE_2D);
-}
+static LogManager logs;
+static Frog frog;
+
 static void drawObstacles(std::vector<int> obxs, std::vector<int> obys, auto drawFunc)
 {
-	for(int i = 0; i < obxs.size(); i++)
-	{
-		for(int j = 0; j < obys.size(); j++)
-		{
-			drawFunc(i, j);
-		}
-	}	
+    for (int i = 0; i < obxs.size(); i++)
+    {
+        for (int j = 0; j < obys.size(); j++)
+        {
+            drawFunc(i, j);
+        }
+    }
 }
+
 static void drawHUD()
 {
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -89,14 +79,14 @@ static void drawOverlay(const char *title, const char *sub)
 // Logic
 static void resetGame()
 {
-    gFrog.reset();
+    frog.reset();
     gFrame = 0;
     gLives = 3; // this variable needs to be initialized
     gState = PLAYING;
 }
 static void reviveFrog()
 {
-    gFrog.reset();
+    frog.reset();
     gLives--;
 }
 
@@ -105,8 +95,7 @@ static void update()
     if (gState != PLAYING)
         return;
 
-
-    if (gFrog.dead())
+    if (frog.dead())
     {
         if (gLives > 0)
         {
@@ -118,7 +107,7 @@ static void update()
             return;
         }
     }
-    /*if (gFrog.hasWon())
+    /*if (frog.hasWon())
     {
 
     }*/
@@ -161,10 +150,9 @@ static void display()
     glClear(GL_COLOR_BUFFER_BIT);
 
     drawBackground();
-    gFrog.draw();
-		drawObstacles(gTreexs, gTreeys, drawTree); 
-		//drawObstacles(gCars, Car:drawCar);
-		//drawObstacles(gLogs, Log:drawLog); 
+    frog.draw();
+    logs.draw();
+
     drawHUD();
 
     if (gState == MENU)
@@ -205,82 +193,64 @@ static void specialKeyDown(int k, int, int)
     {
     case GLUT_KEY_UP:
         if (gState == PLAYING)
-            gFrog.hopPosY();
+            frog.hopPosY();
         break;
     case GLUT_KEY_DOWN:
         if (gState == PLAYING)
-            gFrog.hopNegY();
+            frog.hopNegY();
         break;
     case GLUT_KEY_RIGHT:
         if (gState == PLAYING)
-            gFrog.hopPosX();
+            frog.hopPosX();
         break;
     case GLUT_KEY_LEFT:
         if (gState == PLAYING)
-            gFrog.hopNegX();
+            frog.hopNegX();
         break;
     }
 }
 
 GLuint frogTextureID;
-GLuint treeID;
+GLuint backgroundTextureID;
+GLuint treeTextureID;
+GLuint logTextureID;
+GLuint carTextureID;
+
 void initTextures()
 {
-    glGenTextures(1, &frogTextureID);
-    glBindTexture(GL_TEXTURE_2D, frogTextureID);
     // Crisp pixel borders instead of blurring.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    GLenum format = (gimp_image.bytes_per_pixel == 4) ? GL_RGBA : GL_RGB;
-		
-    glTexImage2D(GL_TEXTURE_2D, 0, format, gimp_image.width, gimp_image.height, 0, format, GL_UNSIGNED_BYTE, gimp_image.pixel_data);
+    GLenum frogFormat = (frog_texture.bytes_per_pixel == 4) ? GL_RGBA : GL_RGB;
+    glGenTextures(1, &frogTextureID);
+    glBindTexture(GL_TEXTURE_2D, frogTextureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, frogFormat, frog_texture.width, frog_texture.height, 0, frogFormat, GL_UNSIGNED_BYTE, frog_texture.pixel_data);
 
+    GLenum backgroundFormat = (background_texture.bytes_per_pixel == 4) ? GL_RGBA : GL_RGB;
+    glGenTextures(1, &backgroundTextureID);
+    glBindTexture(GL_TEXTURE_2D, backgroundTextureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, backgroundFormat, background_texture.width, background_texture.height, 0, backgroundFormat, GL_UNSIGNED_BYTE, background_texture.pixel_data);
 
-	// Background texture
-		std::vector<unsigned char> bgData(width * height * 3);
-		const char* data = header_data;
+    GLenum treeFormat = (tree_texture.bytes_per_pixel == 4) ? GL_RGBA : GL_RGB;
+    glGenTextures(1, &treeTextureID);
+    glBindTexture(GL_TEXTURE_2D, treeTextureID);
+    glBindTexture(GL_TEXTURE_2D, treeTextureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, treeFormat, tree_texture.width, tree_texture.height, 0, treeFormat, GL_UNSIGNED_BYTE, tree_texture.pixel_data);
 
-		for (int i = 0; i < width * height; i++) {
-		    unsigned char pixel[3];
-		    HEADER_PIXEL(data, pixel);
-  		  bgData[i * 3 + 0] = pixel[0];
-  		  bgData[i * 3 + 1] = pixel[1];
-  		  bgData[i * 3 + 2] = pixel[2];
-		}
-		glGenTextures(1, &backgroundID);
-		glBindTexture(GL_TEXTURE_2D, backgroundID);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
-		             0, GL_RGB, GL_UNSIGNED_BYTE, bgData.data());
-	
-	// Tree texture
-		std::vector<unsigned char> treeData(width * height * 3);
-		const char* treedata = tree_header_data;
+    GLenum logFormat = (log_texture.bytes_per_pixel == 4) ? GL_RGBA : GL_RGB;
+    glGenTextures(1, &logTextureID);
+    glBindTexture(GL_TEXTURE_2D, logTextureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, logFormat, log_texture.width, log_texture.height, 0, logFormat, GL_UNSIGNED_BYTE, log_texture.pixel_data);
 
-		for (int i = 0; i < tree_width * tree_height; i++) {
-		    unsigned char pixel[3];
-		    HEADER_PIXEL(treedata, pixel);
-  		  bgData[i * 3 + 0] = pixel[0];
-  		  bgData[i * 3 + 1] = pixel[1];
-  		  bgData[i * 3 + 2] = pixel[2];
-		}
-		glGenTextures(1, &treeID);
-		glBindTexture(GL_TEXTURE_2D, treeID);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tree_width, tree_height,
-		             0, GL_RGB, GL_UNSIGNED_BYTE, treeData.data());
+    GLenum carFormat = (car_texture.bytes_per_pixel == 4) ? GL_RGBA : GL_RGB;
+    glGenTextures(1, &carTextureID);
+    glBindTexture(GL_TEXTURE_2D, carTextureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, carFormat, car_texture.width, car_texture.height, 0, carFormat, GL_UNSIGNED_BYTE, car_texture.pixel_data);
 }
 
-			
 int main(int argc, char **argv)
 {
     srand((unsigned)time(nullptr));
@@ -298,9 +268,11 @@ int main(int argc, char **argv)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-		glutReshapeFunc([](int w, int h) {
-    	glutReshapeWindow(WIN_W, WIN_H);
-		});
+    glutReshapeFunc([](int w, int h)
+    {
+        glutReshapeWindow(WIN_W, WIN_H);
+    });
+
     glutDisplayFunc(display);
     glutKeyboardFunc(keyDown);
     glutSpecialFunc(specialKeyDown);
