@@ -1,4 +1,4 @@
-#include "car-manager.h"
+#include "../include/car-manager.h"
 
 extern GLuint carTextureID;
 
@@ -29,6 +29,6 @@ void CarManager::update()
 {
     for (auto &car : cars)
     {
-        // TODO: Add or subtract dx based on the time passed.
+
     }
 }

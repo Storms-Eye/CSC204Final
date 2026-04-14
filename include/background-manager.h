@@ -1,6 +1,6 @@
 #pragma once
 
-#include "textures/background.h"
+#include "../textures/background.h"
 #include "draw_utils.h"
 
 extern GLuint backgroundTextureID;

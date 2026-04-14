@@ -1,16 +1,16 @@
-#include "draw_utils.h"
+#include "../include/draw_utils.h"
 
-#include "textures/background.h"
-#include "textures/car.h"
-#include "textures/frog.h"
-#include "textures/log.h"
-#include "textures/tree.h"
+#include "../textures/background.h"
+#include "../textures/car.h"
+#include "../textures/frog.h"
+#include "../textures/log.h"
+#include "../textures/tree.h"
 
-#include "background.h"
-#include "car-manager.h"
-#include "frog.h"
-#include "log-manager.h"
-#include "tree-manager.h"
+#include "../include/background.h"
+#include "../include/car-manager.h"
+#include "../include/frog.h"
+#include "../include/log-manager.h"
+#include "../include/tree-manager.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -31,8 +31,8 @@ static State gState = MENU;
 static int gFrame = 0;
 
 static LogManager logs;
+static CarManager cars;
 static Frog frog;
-
 static void drawHUD()
 {
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -84,47 +84,11 @@ static void update()
             return;
         }
     }
-
+		cars.update();
     logs.update();
 
-    /*if (frog.hasWon())
-    {
-
-    }*/
-
-    // this code is for a win check
-
-    /*// Spawn pipes
-    ++gFrame;
-    if (gFrame % OBSTACLE_INTERVAL == 1)
-        gPipes.emplace_back((float)WIN_W + 10.0f);
-
-    // Update & check pipes
-    for (auto& p : gPipes) {
-        p.update();
-
-        if (!p.scored && p.x + PIPE_W < gBird.x) {
-            p.scored = true;
-            ++gScore;
-        }
-
-        if (p.hits(gBird.x, gBird.y)) {
-            if (gScore > gBest) gBest = gScore;
-            gState = DEAD;
-            return;
-        }
-    }
-
-    gPipes.erase(
-        std::remove_if(gPipes.begin(), gPipes.end(),
-                       [](const Obstacle& p){ return p.offScreen(); }),
-        gPipes.end());
-
-*/
 }
-// above comment is for refernence when we make log and car obstacles.
 
-//  GLUT callbacks
 static void display()
 {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -132,7 +96,7 @@ static void display()
     drawBackground();
     frog.draw();
     logs.draw();
-
+		cars.draw();
     drawHUD();
 
     if (gState == MENU)
