@@ -1,6 +1,6 @@
 #include "frog.h"
 #include "draw_utils.h"
-#include "frog-texture.h"
+#include "textures/frog.h"
 
 extern GLuint frogTextureID;
 

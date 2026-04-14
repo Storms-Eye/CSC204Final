@@ -1,14 +1,12 @@
 #include "draw_utils.h"
-#include "frog-texture.h"
-#include "background.h"
-#include "tree.h"
-#include "log.h"
+#include "textures/frog.h"
+#include "textures/background.h"
+#include "textures/tree.h"
+#include "textures/log.h"
 
 
 #include "frog.h"
 #include "tree.cpp"
-#include "log.cpp"
-#include "car.cpp"
 
 #include <algorithm>
 #include <cstdlib>
