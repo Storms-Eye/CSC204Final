@@ -1,9 +1,14 @@
 #include "draw_utils.h"
 #include "frog-texture.h"
 #include "background.h"
-#include "frog.h"
 #include "tree.h"
 #include "log.h"
+
+
+#include "frog.h"
+#include "tree.cpp"
+#include "log.cpp"
+#include "car.cpp"
 
 #include <algorithm>
 #include <cstdlib>
@@ -22,9 +27,12 @@ enum State
 // Game state
 static State gState = MENU;
 static Frog gFrog;
-//static std::vector<tree> gTrees;
-//static std::vector<log> gLogs;
-//static std::vector<car> gCars;
+static std::vector<int> gTreexs;
+static std::vector<int> gLogxs;
+static std::vector<int> gCarxs;
+static std::vector<int> gTreeys;
+static std::vector<int> gLogys;
+static std::vector<int> gCarys;
 static int gFrame = 0;
 static int gLives = 3;
 
@@ -43,7 +51,10 @@ static void drawBackground()
 		glEnd();
     glDisable(GL_TEXTURE_2D);
 }
-
+static void drawObstacles(std::vector<int> obxs, std::vector<int> obys, auto drawFunc)
+{
+	
+}
 static void drawHUD()
 {
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -147,7 +158,7 @@ static void display()
 
     drawBackground();
     gFrog.draw();
-		//drawObstacles(gTrees, Tree:drawTree); function to draw all obsacles, called with the array of locations and the obstacle type through it's draw function call 
+		drawObstacles(gTreexs, gTreeys, drawTree); 
 		//drawObstacles(gCars, Car:drawCar);
 		//drawObstacles(gLogs, Log:drawLog); 
     drawHUD();
