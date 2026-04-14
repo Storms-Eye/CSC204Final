@@ -1,7 +1,7 @@
 /*  GIMP header image file format (RGB): /home/student/Desktop/tree.h  */
 
-static unsigned int width = 16;
-static unsigned int height = 16;
+static unsigned int tree_width = 16;
+static unsigned int tree_height = 16;
 
 /*  Call this macro repeatedly.  After each use, the pixel data can be extracted  */
 
@@ -11,7 +11,7 @@ pixel[1] = ((((data[1] - 33) & 0xF) << 4) | ((data[2] - 33) >> 2)); \
 pixel[2] = ((((data[2] - 33) & 0x3) << 6) | ((data[3] - 33))); \
 data += 4; \
 }
-static char *header_data =
+const static char *tree_header_data =
 	"````````````````````````````````````````````````````````````````"
 	"````````````3WEP3WEP3WEP3WEP3WEP3WEP3WEPG?613WEP3WEP````````````"
 	"````````3WEPG?613WEP3WEPG?613WEP3WEP3WEP3WEP3WEP3WEP3WEP````````"

@@ -2,7 +2,9 @@
 #include "frog-texture.h"
 #include "background.h"
 #include "frog.h"
-#include "obstacle.h"
+#include "tree.h"
+#include "log.h"
+
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
@@ -20,9 +22,9 @@ enum State
 // Game state
 static State gState = MENU;
 static Frog gFrog;
-static std::vector<Obstacle> gObstacles;
-static int gScore = 0; // unecessary
-static int gBest = 0;  // unecessary
+//static std::vector<tree> gTrees;
+//static std::vector<log> gLogs;
+//static std::vector<car> gCars;
 static int gFrame = 0;
 static int gLives = 3;
 
@@ -73,8 +75,6 @@ static void drawOverlay(const char *title, const char *sub)
 static void resetGame()
 {
     gFrog.reset();
-    gObstacles.clear();
-    gScore = 0;
     gFrame = 0;
     gLives = 3; // this variable needs to be initialized
     gState = PLAYING;
@@ -90,7 +90,6 @@ static void update()
     if (gState != PLAYING)
         return;
 
- //   gFrog.update();
 
     if (gFrog.dead())
     {
@@ -147,8 +146,10 @@ static void display()
     glClear(GL_COLOR_BUFFER_BIT);
 
     drawBackground();
-    drawObstacles(gObstacles);
     gFrog.draw();
+		//drawObstacles(gTrees, Tree:drawTree); function to draw all obsacles, called with the array of locations and the obstacle type through it's draw function call 
+		//drawObstacles(gCars, Car:drawCar);
+		//drawObstacles(gLogs, Log:drawLog); 
     drawHUD();
 
     if (gState == MENU)
@@ -207,6 +208,7 @@ static void specialKeyDown(int k, int, int)
 }
 
 GLuint frogTextureID;
+GLuint treeID;
 void initTextures()
 {
     glGenTextures(1, &frogTextureID);
@@ -224,7 +226,7 @@ void initTextures()
 
 	// Background texture
 		std::vector<unsigned char> bgData(width * height * 3);
-		char* data = header_data;
+		const char* data = header_data;
 
 		for (int i = 0; i < width * height; i++) {
 		    unsigned char pixel[3];
@@ -241,7 +243,28 @@ void initTextures()
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
 		             0, GL_RGB, GL_UNSIGNED_BYTE, bgData.data());
+	
+	// Tree texture
+		std::vector<unsigned char> treeData(width * height * 3);
+		const char* treedata = tree_header_data;
+
+		for (int i = 0; i < tree_width * tree_height; i++) {
+		    unsigned char pixel[3];
+		    HEADER_PIXEL(treedata, pixel);
+  		  bgData[i * 3 + 0] = pixel[0];
+  		  bgData[i * 3 + 1] = pixel[1];
+  		  bgData[i * 3 + 2] = pixel[2];
+		}
+		glGenTextures(1, &treeID);
+		glBindTexture(GL_TEXTURE_2D, treeID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, tree_width, tree_height,
+		             0, GL_RGB, GL_UNSIGNED_BYTE, treeData.data());
 }
+
 			
 int main(int argc, char **argv)
 {

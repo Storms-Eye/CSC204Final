@@ -10,7 +10,6 @@ find_package(GLUT REQUIRED)
 set(SRCS 
     frogger.cpp 
     frog.cpp 
-    obstacle.cpp
 )
 
 # Create the executable target

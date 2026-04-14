@@ -105,4 +105,5 @@ constexpr int WIN_H = 720;
 constexpr int OBSTACLE_INTERVAL = 500; // distance between obstacles.
 constexpr float FROG_SIZE = 80.0f;
 
-constexpr float PIPE_SPEED = 4.0f; // change this to log and car speed
+constexpr float CAR_SPEED = 4.0f; 
+constexpr float LOG_SPEED = 3.0f; 
