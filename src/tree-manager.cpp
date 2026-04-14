@@ -1,4 +1,4 @@
-#include "tree-manager.h"
+#include "../include/tree-manager.h"
 
 extern GLuint treeTextureID;
 
@@ -8,7 +8,7 @@ void TreeManager::draw()
     {
         float cx = tree.x;
         float cy = tree.y;
-
+				
         glPushMatrix();
         glTranslatef(cx, cy, 0.0f);
         glColor3f(1.0f, 1.0f, 1.0f);
@@ -25,10 +25,4 @@ void TreeManager::addTree(float x, float y)
     trees.push_back({x, y, TREE_SIZE, TREE_SIZE, 0});
 }
 
-void TreeManager::update()
-{
-    for (auto &tree : trees)
-    {
-        // TODO: Add or subtract dx based on the time passed.
-    }
-}
+void TreeManager::update(){}//unnecessary

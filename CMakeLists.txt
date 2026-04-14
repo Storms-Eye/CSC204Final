@@ -8,11 +8,11 @@ find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 
 set(SRCS 
-    main.cpp 
-    frog.cpp
-    car-manager.cpp
-    log-manager.cpp
-    tree-manager.cpp
+    src/main.cpp 
+    src/frog.cpp
+    src/car-manager.cpp
+    src/log-manager.cpp
+    src/tree-manager.cpp
 )
 
 # Create the executable target

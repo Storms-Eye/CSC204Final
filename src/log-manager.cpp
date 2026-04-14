@@ -1,4 +1,4 @@
-#include "log-manager.h"
+#include "../include/log-manager.h"
 
 extern GLuint logTextureID;
 
