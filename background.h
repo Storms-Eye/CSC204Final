@@ -1,3 +1,4 @@
+/*  GIMP header image file format (RGB): /home/student/Desktop/School_Semesters/6Spring/CSC204/C++/OPENGLFINAL/background.h  */
 /*  GIMP header image file format (RGB): /home/student/Desktop/background.h  */
 
 static unsigned int width = 144;
@@ -1309,4 +1310,3 @@ static char *header_data =
 	"?4K!?4K!?4K!?4K!?4K!P%K<?4K!?4K!?4K!P%K<?4K!?4K!?4K!?4K!P%K<?4K!"
 	"?4K!?4K!?4K!P%K<?4K!?4K!?4K!P%K<P%K<P%K<?4K!?4K!?4K!?4K!?4K!?4K!"
 	"";
-

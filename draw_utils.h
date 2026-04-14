@@ -100,9 +100,9 @@ inline void hsvToRgb(float h, float s, float v, float &r, float &g, float &b)
 }
 
 // Constants.
-constexpr int WIN_W = 800;
-constexpr int WIN_H = 600;
-constexpr int OBSTACLE_INTERVAL = 200; // distance between obstacles.
-constexpr float FROG_SIZE = 25.0f;
+constexpr int WIN_W = 720;
+constexpr int WIN_H = 720;
+constexpr int OBSTACLE_INTERVAL = 500; // distance between obstacles.
+constexpr float FROG_SIZE = 80.0f;
 
 constexpr float PIPE_SPEED = 4.0f; // change this to log and car speed

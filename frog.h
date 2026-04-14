@@ -5,9 +5,8 @@
 
 struct Frog
 {
-    float x = 180.0f;
-    float y = WIN_H / 2.0f;
-
+    float x = WIN_W / 2.0f - FROG_SIZE / 2.0f;
+    float y = 0.0f;
     void reset();
     bool dead();
     void draw();
