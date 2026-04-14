@@ -25,11 +25,11 @@ enum State
 // Game state
 static State gState = MENU;
 static Frog gFrog;
-static std::vector<int> gTreexs;
+static std::vector<int> gTreexs = {0,static_cast<int>(FROG_SIZE),static_cast<int>(FROG_SIZE*2),static_cast<int>(FROG_SIZE*3),static_cast<int>(FROG_SIZE*4),static_cast<int>(FROG_SIZE*5),static_cast<int>(FROG_SIZE*6),static_cast<int>(FROG_SIZE*7)};
+static std::vector<int> gTreeys = {0,0,0,0,0,0,0,0};
 static std::vector<int> gLogxs;
-static std::vector<int> gCarxs;
-static std::vector<int> gTreeys;
 static std::vector<int> gLogys;
+static std::vector<int> gCarxs;
 static std::vector<int> gCarys;
 static int gFrame = 0;
 static int gLives = 3;
@@ -51,7 +51,13 @@ static void drawBackground()
 }
 static void drawObstacles(std::vector<int> obxs, std::vector<int> obys, auto drawFunc)
 {
-	
+	for(int i = 0; i < obxs.size(); i++)
+	{
+		for(int j = 0; j < obys.size(); j++)
+		{
+			drawFunc(i, j);
+		}
+	}	
 }
 static void drawHUD()
 {
