@@ -8,20 +8,19 @@ void Frog::draw()
 {
     float cx = x;
     float cy = y;
-
     glPushMatrix();
     glTranslatef(cx, cy, 0.0f);
     glColor3f(1.0f, 1.0f, 1.0f);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, frogTextureID); // Assuming this is accessible
+    glBindTexture(GL_TEXTURE_2D, frogTextureID);
     texturedQuad(0.0f, 0.0f, FROG_SIZE, FROG_SIZE);
     glDisable(GL_TEXTURE_2D);
+    glDisable(GL_BLEND);
     glPopMatrix();
 }
 
-void Frog::update()
-{
-}
 
 void Frog::hopPosX()
 {
@@ -57,10 +56,9 @@ void Frog::hopNegY()
 
 void Frog::reset()
 {
-    x = WIN_W / 2.0f - FROG_SIZE; // 
-    y = 0; //bottom of the window
+	x = WIN_W / 2.0f - FROG_SIZE / 2.0f;
+	y = 0.0f;
 }
-
 // TODO: add the conditions for death from obstacle.
 bool Frog::dead()
 {

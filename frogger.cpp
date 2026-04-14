@@ -1,5 +1,6 @@
 #include "draw_utils.h"
 #include "frog-texture.h"
+#include "background.h"
 #include "frog.h"
 #include "obstacle.h"
 #include <algorithm>
@@ -26,9 +27,19 @@ static int gFrame = 0;
 static int gLives = 3;
 
 // Scene drawing
+GLuint backgroundID;
 static void drawBackground()
 {
-    // Brady's background goes here
+   glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, backgroundID);
+    glColor3f(1.0f, 1.0f, 1.0f); // no tint
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 1); glVertex2f(0, 0);
+		glTexCoord2f(1, 1); glVertex2f(WIN_W, 0);
+		glTexCoord2f(1, 0); glVertex2f(WIN_W, WIN_H);
+		glTexCoord2f(0, 0); glVertex2f(0, WIN_H);
+		glEnd();
+    glDisable(GL_TEXTURE_2D);
 }
 
 static void drawHUD()
@@ -79,7 +90,7 @@ static void update()
     if (gState != PLAYING)
         return;
 
-    gFrog.update();
+ //   gFrog.update();
 
     if (gFrog.dead())
     {
@@ -141,7 +152,7 @@ static void display()
     drawHUD();
 
     if (gState == MENU)
-        drawOverlay("Frogger", "SPACE or click to start");
+        drawOverlay("Frogger", "press SPACE to start");
     else if (gState == DEAD)
         drawOverlay("GAME OVER", "Press R to restart");
 
@@ -200,7 +211,6 @@ void initTextures()
 {
     glGenTextures(1, &frogTextureID);
     glBindTexture(GL_TEXTURE_2D, frogTextureID);
-
     // Crisp pixel borders instead of blurring.
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -208,10 +218,31 @@ void initTextures()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     GLenum format = (gimp_image.bytes_per_pixel == 4) ? GL_RGBA : GL_RGB;
-
+		
     glTexImage2D(GL_TEXTURE_2D, 0, format, gimp_image.width, gimp_image.height, 0, format, GL_UNSIGNED_BYTE, gimp_image.pixel_data);
-}
 
+
+	// Background texture
+		std::vector<unsigned char> bgData(width * height * 3);
+		char* data = header_data;
+
+		for (int i = 0; i < width * height; i++) {
+		    unsigned char pixel[3];
+		    HEADER_PIXEL(data, pixel);
+  		  bgData[i * 3 + 0] = pixel[0];
+  		  bgData[i * 3 + 1] = pixel[1];
+  		  bgData[i * 3 + 2] = pixel[2];
+		}
+		glGenTextures(1, &backgroundID);
+		glBindTexture(GL_TEXTURE_2D, backgroundID);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
+		             0, GL_RGB, GL_UNSIGNED_BYTE, bgData.data());
+}
+			
 int main(int argc, char **argv)
 {
     srand((unsigned)time(nullptr));
@@ -229,6 +260,9 @@ int main(int argc, char **argv)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
+		glutReshapeFunc([](int w, int h) {
+    	glutReshapeWindow(WIN_W, WIN_H);
+		});
     glutDisplayFunc(display);
     glutKeyboardFunc(keyDown);
     glutSpecialFunc(specialKeyDown);
