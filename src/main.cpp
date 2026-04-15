@@ -28,7 +28,7 @@ enum State
 
 // Game state
 static State gState = MENU;
-static int gFrame = 0;
+int gFrame = 0;
 
 static LogManager logs;
 static CarManager cars;
@@ -221,29 +221,20 @@ int main(int argc, char **argv)
     initTextures();
 
     // Initialize cars on different rows with different speeds/directions
-    // Row 1: Cars moving right (positive speed)
-    for (float x = 0; x < WIN_W; x += FROG_SIZE * 2)
-    {
-        cars.addCar(x, FROG_SIZE * 1, CAR_SPEED);
-    }
-    
-    // Row 2: Cars moving left (negative speed)
-    for (float x = WIN_W; x > 0; x -= FROG_SIZE * 2)
+
+    // Row 1: Cars moving left (negative speed)
+    for (float x = WIN_W; x > 0; x -= FROG_SIZE * 4)
     {
         cars.addCar(x, FROG_SIZE * 2, -CAR_SPEED);
     }
     
-    // Row 3: Cars moving right (positive speed)
-    for (float x = 0; x < WIN_W; x += FROG_SIZE * 3)
+    // Row 2: Cars moving right (positive speed)
+    for (float x = 0; x < WIN_W; x += FROG_SIZE * 4)
     {
         cars.addCar(x, FROG_SIZE * 3, CAR_SPEED);
     }
     
-    // Row 4: Cars moving left (negative speed)
-    for (float x = WIN_W; x > 0; x -= FROG_SIZE * 2.5)
-    {
-        cars.addCar(x, FROG_SIZE * 4, -CAR_SPEED);
-    }
+
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
