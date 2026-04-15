@@ -4,6 +4,8 @@ extern GLuint treeTextureID;
 
 void TreeManager::draw()
 {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     for (auto &tree : trees)
     {
         float cx = tree.x;
@@ -18,6 +20,7 @@ void TreeManager::draw()
         glDisable(GL_TEXTURE_2D);
         glPopMatrix();
     }
+    glDisable(GL_BLEND);
 }
 
 void TreeManager::addTree(float x, float y)
