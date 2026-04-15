@@ -65,3 +65,8 @@ void CarManager::update()
         }
     }
 }
+
+std::vector<Obstacle> CarManager::getCars()
+{
+    return cars;
+}

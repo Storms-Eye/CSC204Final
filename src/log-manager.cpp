@@ -58,3 +58,8 @@ void LogManager::update()
         }
     }
 }
+
+std::vector<Obstacle> LogManager::getLogs()
+{
+    return obstacles;
+}
