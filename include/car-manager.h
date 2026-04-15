@@ -8,7 +8,7 @@ class CarManager
 {
 private:
     std::vector<Obstacle> cars;
-    static constexpr int MOVE_INTERVAL = 20; 
+    static constexpr int MOVE_INTERVAL = 30; 
     
 public:
     void draw();
