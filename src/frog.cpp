@@ -1,13 +1,13 @@
 #include "../include/frog.h"
 #include "../include/draw_utils.h"
 #include "../textures/frog.h"
+
 #include <array>
 extern GLuint frogTextureID;
 
 Frog::Frog()
 {
   lives = 3;
-	array<bool> winPlatforms = {false, false, false, false, false};
 }
 
 void Frog::draw()
@@ -29,7 +29,21 @@ void Frog::draw()
 
 int Frog::hasWon()
 {
-	//redo this
+	if(y == WIN_H-FROG_SIZE)
+	{
+		int location = static_cast<int>(x/FROG_SIZE);
+		if((location%2 == 0) && winPlatforms.at(location/2) == false)
+		{
+			winPlatforms[location/2] = true;
+			//Obstacles.addFrog(x, y);
+			return 0;
+		}
+		else
+		{
+			return 1;
+		}
+	}
+	return 2;
 }
 
 

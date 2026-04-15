@@ -71,25 +71,31 @@ static void update()
 {
     if (gState != PLAYING)
         return;
-		if(frog.hasWon())
+		int areYaWinninSon = frog.hasWon();
+		if(areYaWinninSon == 0)
 		{
 			frog.revive(true);
 		}
+		else if (areYaWinninSon == 1)
+		{
+     	frog.revive(false);
+      if (!(frog.getLives() > 0))
+      {
+          gState = DEAD;
+          return;
+     	}
+		}
     if (frog.dead())
     {
-        if (frog.getLives() > 0)
-        {
-            frog.revive(false);
-        }
-        else
-        {
-            gState = DEAD;
-            return;
-        }
+     	frog.revive(false);
+      if (!(frog.getLives() > 0))
+      {
+          gState = DEAD;
+          return;
+     	}
     }
 		cars.update();
     logs.update();
-
 }
 
 static void display()
