@@ -97,6 +97,12 @@ static void update()
 			gState = WON;
 			return;
 		}
+    cars.update();
+    logs.update();
+    extern int gFrame;
+    if(gFrame % 30 == 0)
+    frog.rideLog(logs);
+    
     if (frog.dead(cars, logs, trees))
     {
      	frog.revive(false);
@@ -106,8 +112,6 @@ static void update()
           return;
      	}
     }
-		cars.update();
-    logs.update();
 }
 
 static void display()
