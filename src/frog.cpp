@@ -74,44 +74,44 @@ void Frog::reset()
 }
 
 bool Frog::dead(CarManager carM, LogManager logM, TreeManager treeM)
-  {
-      bool dead = false;
-      for(auto car : carM.getCars())
-      {
-          if(x == car.x && y == car.y)
-          {
-              dead = true;
-              return dead;
-          }
-      }
-       if(y == FROG_SIZE * 6 || y == FROG_SIZE * 7)     {
-         bool onLog = false;
-         for(auto log : logM.getLogs())
-         {
-             if(y == log.y && x + FROG_SIZE > log.x && x < log.x + log.width)
-             {
-                 onLog = true;
-                 break;
-             }
-         }
-         if(!onLog)
-         {
-             dead = true;
-             return dead;
-         }
-     }
-  
-      for(auto tree : treeM.getTrees())
-      {
-          if(x == tree.x && y == tree.y)
-          {
-              dead = true;
-              return dead;
-          }
-      }
-      return dead;
-  }
+{
+    bool dead = false;
 
+    // Out of horizontal bounds (e.g. rode off edge of screen on a log)
+    if (x < 0 || x + FROG_SIZE > WIN_W)
+    {
+        return true;
+    }
+
+    for (auto car : carM.getCars())
+    {
+        if (x == car.x && y == car.y)
+            return true;
+    }
+
+    if (y == FROG_SIZE * 6 || y == FROG_SIZE * 7)
+    {
+        bool onLog = false;
+        for (auto log : logM.getLogs())
+        {
+            if (y == log.y && x + FROG_SIZE > log.x && x < log.x + log.width)
+            {
+                onLog = true;
+                break;
+            }
+        }
+        if (!onLog)
+            return true;
+    }
+
+    for (auto tree : treeM.getTrees())
+    {
+        if (x == tree.x && y == tree.y)
+            return true;
+    }
+
+    return false;
+}
 
 int Frog::getLives()
 {
@@ -151,22 +151,25 @@ void Frog::hopNegY()
 }
 
 void Frog::rideLog(LogManager &logM)
- {
-     if(y != FROG_SIZE * 6 && y != FROG_SIZE * 7)
-         return;
+{
+    if (y != FROG_SIZE * 6 && y != FROG_SIZE * 7)
+        return;
 
-     for(auto &log : logM.getLogs())
-     {
-         if(y == log.y && x + FROG_SIZE > log.x && x < log.x + log.width)
-         {
-             float step = (log.speed > 0) ? FROG_SIZE : -FROG_SIZE;
-             float newX = x + step;
- 
-             if(newX >= 0 && newX + FROG_SIZE <= WIN_W)
-             {
-                 x = newX;
-             }
-             return;
-         }
+    for (auto &log : logM.getLogs())
+    {
+        if (y == log.y && x + FROG_SIZE > log.x && x < log.x + log.width)
+        {
+            // Move frog by same amount the log moves each interval
+            float step = (log.speed > 0) ? FROG_SIZE : -FROG_SIZE;
+            x += step;
+            // Don't clamp — let dead() catch out-of-bounds naturally,
+            // but also catch it here so frog doesn't wrap or glitch
+            if (x < 0 || x + FROG_SIZE > WIN_W)
+            {
+                // Frog rode off screen — treat as dead by placing out of bounds
+                x = -FROG_SIZE;
+            }
+            return;
+        }
     }
 }
