@@ -42,7 +42,12 @@ int Frog::hasWon()
 		if((location%2 == 0) && winPlatforms.at(location/2) == false)
 		{
 			winPlatforms[location/2] = true;
-			return 0;
+			int returnvalue = 3;
+			for(bool value : winPlatforms)
+			{
+				if(!value) returnvalue = 0;
+			}
+			return returnvalue;
 		}
 		else
 		{
