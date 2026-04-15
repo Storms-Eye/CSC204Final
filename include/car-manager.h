@@ -13,6 +13,6 @@ private:
 public:
     void draw();
     void update();
-  	std::vector<Obstacle> getCars(); 
+    
     void addCar(float x, float y, float speed = CAR_SPEED);
 };

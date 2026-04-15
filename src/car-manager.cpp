@@ -5,6 +5,9 @@ extern int gFrame;
 
 void CarManager::draw()
 {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
     for (auto &car : cars)
     {
         float cx = car.x;
@@ -12,17 +15,22 @@ void CarManager::draw()
 
         glPushMatrix();
         glTranslatef(cx, cy, 0.0f);
-        glColor3f(1.0f, 1.0f, 1.0f);
+        
+        if (car.speed < 0)
+        {
+            glTranslatef(car.width, 0.0f, 0.0f); 
+            glScalef(-1.0f, 1.0f, 1.0f);  
+        }
+        
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, carTextureID);
         texturedQuad(0.0f, 0.0f, car.width, car.height);
         glDisable(GL_TEXTURE_2D);
         glPopMatrix();
     }
-}
-std::vector<Obstacle> CarManager::getCars()
-{
-	return cars;
+    
+    glDisable(GL_BLEND);
 }
 
 void CarManager::addCar(float x, float y, float speed)

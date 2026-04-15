@@ -48,6 +48,8 @@ static void drawOverlay(const char *title, const char *sub)
     glColor4f(0.0f, 0.0f, 0.0f, 0.45f);
     quad(WIN_W / 2.0f - 160.0f, WIN_H / 2.0f - 70.0f, 320.0f, 110.0f);
     glDisable(GL_BLEND);
+
+    glColor3f(1.0f, 0.95f, 0.2f);
     text(WIN_W / 2.0f - 90.0f, WIN_H / 2.0f + 22.0f, title, GLUT_BITMAP_TIMES_ROMAN_24);
 
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -70,6 +72,7 @@ static void update()
 {
     if (gState != PLAYING)
         return;
+
 		int areYaWinninSon = frog.hasWon();
 		if(areYaWinninSon == 0)
 		{
@@ -105,6 +108,7 @@ static void display()
     frog.draw();
     logs.draw();
 		cars.draw();
+
 		trees.draw();
 		std::array<bool, 5> wins = frog.getWins();
     for(int i = 0; i < wins.size(); i++)
@@ -117,6 +121,7 @@ static void display()
 			}
 		}
 		drawHUD();
+
 
     if (gState == MENU)
         drawOverlay("Frogger", "press SPACE to start");
@@ -251,6 +256,20 @@ int main(int argc, char **argv)
     for (float x = 0; x < WIN_W; x += FROG_SIZE * 4)
     {
         cars.addCar(x, FROG_SIZE * 3, CAR_SPEED);
+    }
+
+    // Initialize logs on water rows with different speeds/directions
+    
+    // Row 1: Logs moving right (positive speed)
+    for (float x = 0; x < WIN_W; x += FROG_SIZE * 4)
+    {
+        logs.addLog(x, FROG_SIZE * 6, LOG_SPEED);
+    }
+    
+    // Row 2: Logs moving left (negative speed)
+    for (float x = WIN_W; x > 0; x -= FROG_SIZE * 4)
+    {
+        logs.addLog(x, FROG_SIZE * 7, -LOG_SPEED);
     }
     
 
