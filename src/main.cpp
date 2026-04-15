@@ -32,6 +32,7 @@ int gFrame = 0;
 
 static LogManager logs;
 static CarManager cars;
+static TreeManager trees;
 static Frog frog;
 static void drawHUD()
 {
@@ -72,21 +73,31 @@ static void update()
     if (gState != PLAYING)
         return;
 
-    if (frog.dead())
+		int areYaWinninSon = frog.hasWon();
+		if(areYaWinninSon == 0)
+		{
+			frog.revive(true);
+		}
+		else if (areYaWinninSon == 1)
+		{
+     	frog.revive(false);
+      if (!(frog.getLives() > 0))
+      {
+          gState = DEAD;
+          return;
+     	}
+		}
+    if (frog.dead(cars, logs, trees))
     {
-        if (frog.getLives() > 0)
-        {
-            frog.revive();
-        }
-        else
-        {
-            gState = DEAD;
-            return;
-        }
+     	frog.revive(false);
+      if (!(frog.getLives() > 0))
+      {
+          gState = DEAD;
+          return;
+     	}
     }
 		cars.update();
     logs.update();
-
 }
 
 static void display()
@@ -97,7 +108,20 @@ static void display()
     frog.draw();
     logs.draw();
 		cars.draw();
-    drawHUD();
+
+		trees.draw();
+		std::array<bool, 5> wins = frog.getWins();
+    for(int i = 0; i < wins.size(); i++)
+		{
+			if(wins.at(i))
+			{
+				Frog newFrog;
+				newFrog.setPos(i*FROG_SIZE*2, WIN_H-FROG_SIZE);
+				newFrog.draw();
+			}
+		}
+		drawHUD();
+
 
     if (gState == MENU)
         drawOverlay("Frogger", "press SPACE to start");
