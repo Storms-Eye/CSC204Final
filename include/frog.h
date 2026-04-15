@@ -20,6 +20,9 @@ public:
 		void setPos(int a, int b);
 		int hasWon();
 		bool dead(CarManager carM, LogManager logM, TreeManager treeM);
+    void rideLog(LogManager &logM);
+    float getX() const { return x; }
+    float getY() const { return y; }
     void draw();
     void update();
     void revive(bool hasWon);

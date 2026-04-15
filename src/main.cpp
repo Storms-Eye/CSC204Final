@@ -23,7 +23,8 @@ enum State
 {
     MENU,
     PLAYING,
-    DEAD
+    DEAD,
+		WON
 };
 
 // Game state
@@ -59,6 +60,10 @@ static void drawOverlay(const char *title, const char *sub)
     {
         text18(WIN_W / 2.0f - 80.0f, WIN_H / 2.0f - 44.0f, "Game Over");
     }
+		if(gState == WON)
+		{
+				text18(WIN_W / 2.0f - 80.0f, WIN_H / 2.0f - 44.0f, "Congratulations!");
+		}
 }
 
 static void resetGame()
@@ -87,6 +92,16 @@ static void update()
           return;
      	}
 		}
+		else if (areYaWinninSon == 3)
+		{
+			gState = WON;
+			return;
+		}
+    cars.update();
+    logs.update();
+    extern int gFrame;
+    if(gFrame % 30 == 0)
+    frog.rideLog(logs);
     if (frog.dead(cars, logs, trees))
     {
      	frog.revive(false);
@@ -96,8 +111,6 @@ static void update()
           return;
      	}
     }
-		cars.update();
-    logs.update();
 }
 
 static void display()
@@ -127,7 +140,8 @@ static void display()
         drawOverlay("Frogger", "press SPACE to start");
     else if (gState == DEAD)
         drawOverlay("GAME OVER", "Press R to restart");
-
+		else if (gState == WON)
+				drawOverlay("YOU WIN", "Press R to play again");
     glutSwapBuffers();
 }
 
@@ -149,7 +163,7 @@ static void keyDown(unsigned char k, int, int)
         break;
     case 'r':
     case 'R':
-        if (gState == DEAD)
+        if (gState == DEAD || gState == WON)
             resetGame();
         break;
     case 27: // ESC

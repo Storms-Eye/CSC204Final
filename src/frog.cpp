@@ -42,7 +42,12 @@ int Frog::hasWon()
 		if((location%2 == 0) && winPlatforms.at(location/2) == false)
 		{
 			winPlatforms[location/2] = true;
-			return 0;
+			int returnvalue = 3;
+			for(bool value : winPlatforms)
+			{
+				if(!value) returnvalue = 0;
+			}
+			return returnvalue;
 		}
 		else
 		{
@@ -68,38 +73,45 @@ void Frog::reset()
 	winPlatforms = {false, false, false, false, false};
 }
 
-bool Frog::dead(CarManager carM, LogManager logM, TreeManager treeM) //is frog dead?
-{
-	bool dead = false;
-	for(auto car : carM.getCars())
-	{
-		if(x == car.x && y == car.y)
-		{
-			dead = true;
-			return dead;
-		}
-	}
-	if(y < 720 - FROG_SIZE && y > 720 - FROG_SIZE*3)
-	{
-		for(auto log : logM.getLogs())
-		{
-			if(!(x == log.x && y == log.y))
-			{
-				dead = true;
-				return dead;
-			}
-		}
-	}
-	for(auto tree : treeM.getTrees())
-	{
-		if(x == tree.x && y == tree.y)
-		{
-			dead = true;
-			return dead;
-		}
-	}
-	return dead;
-}
+bool Frog::dead(CarManager carM, LogManager logM, TreeManager treeM)
+  {
+      bool dead = false;
+      for(auto car : carM.getCars())
+      {
+          if(x == car.x && y == car.y)
+          {
+              dead = true;
+              return dead;
+          }
+      }
+       if(y == FROG_SIZE * 6 || y == FROG_SIZE * 7)     {
+         bool onLog = false;
+         for(auto log : logM.getLogs())
+         {
+             if(y == log.y && x + FROG_SIZE > log.x && x < log.x + log.width)
+             {
+                 onLog = true;
+                 break;
+             }
+         }
+         if(!onLog)
+         {
+             dead = true;
+             return dead;
+         }
+     }
+  
+      for(auto tree : treeM.getTrees())
+      {
+          if(x == tree.x && y == tree.y)
+          {
+              dead = true;
+              return dead;
+          }
+      }
+      return dead;
+  }
+
 
 int Frog::getLives()
 {
@@ -135,5 +147,26 @@ void Frog::hopNegY()
     if ((y - FROG_SIZE) >= 0)
     {
         y -= FROG_SIZE;
+    }
+}
+
+void Frog::rideLog(LogManager &logM)
+ {
+     if(y != FROG_SIZE * 6 && y != FROG_SIZE * 7)
+         return;
+
+     for(auto &log : logM.getLogs())
+     {
+         if(y == log.y && x + FROG_SIZE > log.x && x < log.x + log.width)
+         {
+             float step = (log.speed > 0) ? FROG_SIZE : -FROG_SIZE;
+             float newX = x + step;
+ 
+             if(newX >= 0 && newX + FROG_SIZE <= WIN_W)
+             {
+                 x = newX;
+             }
+             return;
+         }
     }
 }
