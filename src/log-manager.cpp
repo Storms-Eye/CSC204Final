@@ -59,7 +59,7 @@ void LogManager::update()
     }
 }
 
-std::vector<Obstacle> LogManager::getLogs()
+std::vector<Obstacle>& LogManager::getLogs()
 {
     return obstacles;
 }
