@@ -21,6 +21,10 @@ void LogManager::draw()
     }
 }
 
+std::vector<Obstacle> LogManager::getLogs()
+{
+	return obstacles;
+}
 void LogManager::addLog(float x, float y, float speed)
 {
     obstacles.push_back({x, y, LOG_SIZE_W, LOG_SIZE_H, speed});

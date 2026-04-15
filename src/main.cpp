@@ -32,6 +32,7 @@ int gFrame = 0;
 
 static LogManager logs;
 static CarManager cars;
+static TreeManager trees;
 static Frog frog;
 static void drawHUD()
 {
@@ -47,8 +48,6 @@ static void drawOverlay(const char *title, const char *sub)
     glColor4f(0.0f, 0.0f, 0.0f, 0.45f);
     quad(WIN_W / 2.0f - 160.0f, WIN_H / 2.0f - 70.0f, 320.0f, 110.0f);
     glDisable(GL_BLEND);
-
-    glColor3f(1.0f, 0.95f, 0.2f);
     text(WIN_W / 2.0f - 90.0f, WIN_H / 2.0f + 22.0f, title, GLUT_BITMAP_TIMES_ROMAN_24);
 
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -85,7 +84,7 @@ static void update()
           return;
      	}
 		}
-    if (frog.dead())
+    if (frog.dead(cars, logs, trees))
     {
      	frog.revive(false);
       if (!(frog.getLives() > 0))
@@ -106,7 +105,18 @@ static void display()
     frog.draw();
     logs.draw();
 		cars.draw();
-    drawHUD();
+		trees.draw();
+		std::array<bool, 5> wins = frog.getWins();
+    for(int i = 0; i < wins.size(); i++)
+		{
+			if(wins.at(i))
+			{
+				Frog newFrog;
+				newFrog.setPos(i*FROG_SIZE*2, WIN_H-FROG_SIZE);
+				newFrog.draw();
+			}
+		}
+		drawHUD();
 
     if (gState == MENU)
         drawOverlay("Frogger", "press SPACE to start");

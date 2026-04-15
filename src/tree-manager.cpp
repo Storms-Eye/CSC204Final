@@ -24,5 +24,9 @@ void TreeManager::addTree(float x, float y)
 {
     trees.push_back({x, y, TREE_SIZE, TREE_SIZE, 0});
 }
+std::vector<Obstacle> TreeManager::getTrees()
+{
+	return trees;
+}
 
 void TreeManager::update(){}//unnecessary
