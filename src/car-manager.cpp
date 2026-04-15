@@ -20,6 +20,10 @@ void CarManager::draw()
         glPopMatrix();
     }
 }
+std::vector<Obstacle> CarManager::getCars()
+{
+	return cars;
+}
 
 void CarManager::addCar(float x, float y, float speed)
 {

@@ -1,7 +1,6 @@
 #include "../include/frog.h"
 #include "../include/draw_utils.h"
 #include "../textures/frog.h"
-
 #include <array>
 extern GLuint frogTextureID;
 
@@ -10,6 +9,11 @@ Frog::Frog()
   lives = 3;
 }
 
+void Frog::setPos(int newX, int newY)
+{
+	x = newX;
+	y = newY;
+}
 void Frog::draw()
 {
     float cx = x;
@@ -26,7 +30,10 @@ void Frog::draw()
     glDisable(GL_BLEND);
     glPopMatrix();
 }
-
+std::array<bool, 5> Frog::getWins()
+{
+	return winPlatforms;
+}
 int Frog::hasWon()
 {
 	if(y == WIN_H-FROG_SIZE)
@@ -35,7 +42,6 @@ int Frog::hasWon()
 		if((location%2 == 0) && winPlatforms.at(location/2) == false)
 		{
 			winPlatforms[location/2] = true;
-			//Obstacles.addFrog(x, y);
 			return 0;
 		}
 		else
@@ -58,13 +64,41 @@ void Frog::reset()
 {
 	x = WIN_W / 2.0f - FROG_SIZE / 2.0f;
 	y = 0.0f;
-    lives = 3;
+  lives = 3;
+	winPlatforms = {false, false, false, false, false};
 }
 
-// TODO: add the conditions for death from obstacle.
-bool Frog::dead()
+bool Frog::dead(CarManager carM, LogManager logM, TreeManager treeM) //is frog dead?
 {
-    return false;
+	bool dead = false;
+	for(auto car : carM.getCars())
+	{
+		if(x == car.x && y == car.y)
+		{
+			dead = true;
+			return dead;
+		}
+	}
+	if(y < 720 - FROG_SIZE && y > 720 - FROG_SIZE*3)
+	{
+		for(auto log : logM.getLogs())
+		{
+			if(!(x == log.x && y == log.y))
+			{
+				dead = true;
+				return dead;
+			}
+		}
+	}
+	for(auto tree : treeM.getTrees())
+	{
+		if(x == tree.x && y == tree.y)
+		{
+			dead = true;
+			return dead;
+		}
+	}
+	return dead;
 }
 
 int Frog::getLives()

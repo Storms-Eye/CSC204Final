@@ -12,6 +12,6 @@ private:
 public:
     void draw();
     void update();
-
+		std::vector<Obstacle> getTrees();
     void addTree(float x, float y);
 };
