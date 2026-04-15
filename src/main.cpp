@@ -105,9 +105,9 @@ static void display()
     glClear(GL_COLOR_BUFFER_BIT);
 
     drawBackground();
-    frog.draw();
     logs.draw();
-		cars.draw();
+    frog.draw();
+	cars.draw();
 
 		trees.draw();
 		std::array<bool, 5> wins = frog.getWins();
